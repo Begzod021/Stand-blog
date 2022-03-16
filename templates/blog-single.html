@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <main id="main">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog Single</h2>
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li>Blog Single</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+    <!-- ======= Blog Single Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-8 entries">
+
+            <article class="entry entry-single">
+              <div class="entry-img">
+                <img src="{{ blog.image.url }}" alt="" class="img-fluid">
+              </div>
+
+              <h2 class="entry-title">
+                <a href="{% url 'blogsingle' blog.slug  %}">{{ blog.title }}</a>
+              </h2>
+
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="{% url 'account_edit' blog.company.slug %}">{{ blog.company }}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="{% url 'blog_date' blog.date %}"><time datetime="2020-01-01">{{ blog.date }}</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="{% url 'blogsingle' blog.slug  %}">{{ blog.get_comment_count }} Comments</a></li>
+                </ul>
+              </div>
+
+              <div class="entry-content">
+                <p>
+                 {{ blog.text }}
+                </p>
+              </div>
+
+            </article><!-- End blog entry -->
+
+            <div class="blog-author d-flex align-items-center">
+              <img src="{% static 'assets/img/blog/blog-author.jpg' %}" class="rounded-circle float-left" alt="">
+              <div>
+                <h4></h4>
+                <div class="social-links">
+                  <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
+                  <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                  <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+                </div>
+                <p>
+                  Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+                </p>
+              </div>
+            </div><!-- End blog author bio -->
+
+            <div class="blog-comments">
+
+              <h4 class="comments-count">{{ blog.get_comment_count }} Comments</h4>
+              {% for comment in comments.all %}
+              <div id="comment-2" class="comment">
+                <div class="d-flex">
+                  <div class="comment-img"><img src="{% static 'assets/img/blog/comments-2.jpg' %}" alt=""></div>
+                  <div>
+                    <h5><a href="">{{ comment.author }}</a></h5>
+                    <time datetime="2020-01-01">{{ comment.date }}</time>
+                    <p>
+                     {{ comment.text | safe }}
+                    </p>
+                  </div>
+                </div>
+                {% for reply in comment.replies.all %}
+                <div id="comment-reply-1" class="comment comment-reply">
+                  <div class="d-flex">
+                    <div class="comment-img"><img src="{% static 'assets/img/blog/comments-2.jpg' %}" alt=""></div>
+                    <div>
+                      <h5><a href="">{{ reply.author }}</a></h5>
+                      <time datetime="2020-01-01">{{ reply.date }}</time>
+                      <p>
+                        {{ reply.text|safe }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="sidebar-heading">
+                  <h5>Answer</h5>
+                </div>
+                <div class="content">
+                    <form id="comment" action="" method="POST">{% csrf_token %}
+                      <div class="row">
+                        <div>
+                          <fieldset>
+                            <input type="text" name="text">
+                            
+                          </fieldset>
+                        </div>
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="col-lg-5">
+                          <fieldset>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div><br>
+                {% endfor %}
+                <form action="" id="comment" method="POST">{% csrf_token %}
+                  <div class="row">
+                    <div class="col form-group">
+                      
+                      {{ comment_form.media }}
+                      {{ comment_form.text }}<br>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+
+            </div><!-- End blog comments -->
+
+          </div><!-- End blog entries list -->
+
+          <div class="col-lg-4">
+
+            <div class="sidebar">
+
+              <h3 class="sidebar-title">Search</h3>
+              <div class="sidebar-item search-form">
+                <form action="">
+                  <input type="text">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+
+              <h3 class="sidebar-title">Categories</h3>
+              <div class="sidebar-item categories">
+                <ul>
+                  {% for i in category %}
+                  <li><a href="{% url 'blog_category' i.slug %}">{{ i.name }} <span>({{ i.get_post_count }})</span></a></li>
+                  {% endfor %}
+                </ul>
+              </div><!-- End sidebar categories-->
+
+              <h3 class="sidebar-title">Recent Posts</h3>
+              {% for post in blog_right %}
+              {% if blog.title != post.title %}
+              <div class="sidebar-item recent-posts">
+                <div class="post-item clearfix">
+                  <img src="{{ post.image.url }}" alt="">
+                  <h4><a href="{% url 'blogsingle' post.slug %}">{{ post.title }}</a></h4>
+                  <time datetime="2020-01-01">{{ post.date }}</time>
+                </div>
+              </div><!-- End sidebar recent posts-->
+              {% endif %}
+              {% endfor %}
+
+
+            </div><!-- End sidebar -->
+
+          </div><!-- End blog sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End Blog Single Section -->
+
+  </main><!-- End #main -->
+{% endblock %}

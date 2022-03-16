@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Form</title>
+</head>
+<body>
+    <form method="post" enctype='multipart/form-data' >{% csrf_token %}
+        <p>Title</p>
+        {{ form.title }}
+        <p>Text</p>
+        {{ form.text }}
+        <p>Image</p>
+        {{ form.image }}
+        <p>Category</p>
+        {{ form.category }}
+        <p>Price</p>
+        {{ form.price }}
+        <p>Month or None</p>
+        {{ form.price_month }}
+        <p>Phone Number</p>
+        {{ form.phone }}
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

@@ -1,0 +1,818 @@
+
+
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--  This file has been downloaded from bootdey.com @bootdey on twitter -->
+    <!--  All snippets are MIT license http://bootdey.com/license -->
+    <title>User profile account setting - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-white profile-widget">
+            <div class="row">
+                <div class="col-sm-12">
+                    {% if userprofile.back_avatar %}
+                    <div class="image-container bg2" style="background-image: url('{{userprofile.back_avatar.url}}');">
+                    {% else %}
+                    <div class="image-container bg2" style="background-image: url('{{s}}');">
+                    {% endif %}
+                      {% if userprofile.logo %}  
+                        <img src="{{userprofile.logo.url}}" class="avatar" alt="avatar">
+                      {% else %}
+                        <img src="{{ post.image.url }}" class="avatar" alt="avatar">
+                      {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="details">
+                        <h4>{{userprofile.companyname}}<i class="fa fa-sheild"></i></h4>
+                        <div class="mb-3">{{request.user.bio}}</div>
+                        {% comment %} <div>(bio)</div> {% endcomment %}
+                        {% if user.username == userprofile.username %}
+                          <div class="mg-top-10">
+                              <a href="{% url 'worker_register' userprofile.slug %}" class="btn btn-blue"><i class="fa-solid fa-pen"></i> +Add</a> 
+                              <a href="{% url 'company_edit' userprofile.slug %}" class="btn btn-green"><i class="fa-solid fa-circle-plus"></i> Create post</a>
+                              {% comment %} <!-- Button trigger modal -->
+                              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Launch demo modal
+                              </button> {% endcomment %}
+
+
+                          </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-sm-5">
+              <div class="panel panel-white border-top-purple">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa-solid fa-user"></i> {{userprofile.username}}</h3>
+                    <div class="controls pull-right">
+                        <span class="pull-right clickable">
+                            <i class="fa fa-chevron-up"></i>
+                        </span>
+                    </div>
+                </div>
+                  
+                <div class="panel-body">
+                  <div class="body-section">
+                      <h5 class="section-heading">Company Director</h5>
+                      <p class="section-content">{{userprofile.username}}</p>
+                  </div>
+                  <div class="body-section">
+                      <h5 class="section-heading">Address</h5>
+                      <p class="section-content">{{userprofile.address}}</p>
+                  </div>
+                  <div class="body-section">
+                      <h5 class="section-heading">Telephone</h5>
+                      <p class="section-content">{{userprofile.phone}}</p>
+                  </div>
+                  <div class="body-section">
+                      <h5 class="section-heading">Email</h5>
+                      <p class="section-content">{{userprofile.email}}</p>
+                  </div>
+                  <div class="body-section">
+                      <h5 class="section-heading">Social networks</h5>
+                      <a href="{{userprofile.telegram_link}}" target="_blank" class="section-content">{{userprofile.telegram_link}}</a>
+                      <a href="{{userprofile.instagram_link}}" target="_blank" class="section-content">{{userprofile.instagram_link}}</a>
+                      <a href="{{userprofile.facebook_link}}" target="_blank" class="section-content">{{userprofile.facebook_link}}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-sm-7">
+
+              
+                <div class="panel panel-white border-top-green">
+                  <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa-solid fa-circle-info"></i> {{userprofile.companyname}} Info</h3>
+                      <div class="controls pull-right">
+                          <span class="pull-right clickable">
+                              <i class="fa fa-chevron-up"></i>
+                          </span>
+                      </div>
+                  </div>
+                  <div class="panel-body">
+                    <div class="body-section">
+                      <h5 class="section-heading">Worker Login</h5>
+                      <a href="{% url 'worker_login' userprofile.slug %}" class="btn btn-blue"><i class="fa-solid fa-pen"></i>LOGIN</a>
+                      <h5 class="section-heading">List of Workers</h5>
+                      {% for i in worker_list %}
+                      {% if userprofile == i.company %}
+                      <h5>{{ i.username.capitalize }} Position  {{ i.worker_blog.capitalize }}</h5>
+                      {% endif %}
+                      {% endfor %}
+                      </div>
+
+                  {% for post in posts %}
+                    <div class="panel-body">
+                      <div class="body-section">
+                        <h5 class="section-heading">{{post.author}}</h5>
+                        <p class="section-content">{{post.date}}</p>
+                        {% if user.username == userprofile.username %}
+                        <a href="{% url 'post_edit' post.slug %}" class="btn btn-blue"><i class="fa-solid fa-pen"></i>Edit</a>
+                        <a href={% url 'delete_post' post.id %}  class="btn btn-red">Delete</a>
+                        {% endif %}
+                      </div>
+                      <div class="body-section">
+                        <h5 class="section-heading">{{post.title}}</h5>
+                      </div>
+                      {% if post.image %}
+                      <div class="image" style="width: 102%; height: 220px; background-image: url('{{post.image.url}}'); background-size: cover;">
+                      {% else %}
+                      <div class="video" style="width: 100%; height: 220px; background-image: url('{{post.video}}'); background-size: cover;">
+                      {% endif %}
+                      </div>
+                      <div class="body-section">
+                            <a href="{% url 'category-filter' post.category.slug %}" class="section-heading mt-2">{{post.category}}</a>
+                          <br>
+                          <h5 class="section-content">{{post.text|truncatechars:100}}</h5>
+                      </div>
+                      <div class="body-section">
+                        {% for comment in post.comments.all %}
+                          <h5 class="section-heading">{{comment.author}}</h5>
+                          <p class="section-content">---- {{comment.text}}</p>
+                        {% endfor %}
+                      </div>
+
+                      <form method="POST" action="">{% csrf_token %}
+                        <input type="hidden" name="post" value="{{ post.id }}">
+                        <input type="text" name="text" style="width: 100%;" placeholder="Write a comment">
+                        <input type="submit" style="width: 20%;" value="Submit" />
+                      </form>
+                    </div>
+                    <hr>
+                  {% endfor %}
+                </div>
+              
+            </div>
+            
+            <div class="col-sm-12" style="background-color: #27ae60; width: 100%; height: 100px;">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<style type="text/css">
+body{margin-top:20px;
+background:#eee;
+}
+
+.profile-widget {
+  position: relative;
+}
+.profile-widget .image-container {
+  background-size: cover;
+  background-position: center;
+  padding: 190px 0 10px;
+}
+.profile-widget .image-container .profile-background {
+  width: 100%;
+  height: auto;
+}
+.profile-widget .image-container .avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto -60px;
+  display: block;
+}
+.profile-widget .details {
+  padding: 50px 15px 15px;
+  text-align: center;
+}
+
+/* Component: Mini Profile Widget */
+.mini-profile-widget .image-container .avatar {
+  width: 180px;
+  height: 180px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: white;
+  padding: 4px;
+  border: 1px solid #dddddd;
+}
+.mini-profile-widget .details {
+  text-align: center;
+}
+
+/* Component: Panel */
+.panel {
+  border-radius: 0;
+  margin-bottom: 30px;
+}
+.panel.solid-color {
+  color: white;
+}
+.panel .panel-heading {
+  border-radius: 0;
+  position: relative;
+}
+.panel .panel-heading > .controls {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+}
+.panel .panel-heading > .controls .nav.nav-pills {
+  margin: -8px 0 0 0;
+}
+.panel .panel-heading > .controls .nav.nav-pills li a {
+  padding: 5px 8px;
+}
+.panel .panel-heading .clickable {
+  margin-top: 0px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.panel .panel-heading.no-heading-border {
+  border-bottom-color: transparent;
+}
+.panel .panel-heading .left {
+  float: left;
+}
+.panel .panel-heading .right {
+  float: right;
+}
+.panel .panel-title {
+  font-size: 16px;
+  line-height: 20px;
+}
+.panel .panel-title.panel-title-sm {
+  font-size: 18px;
+  line-height: 28px;
+}
+.panel .panel-title.panel-title-lg {
+  font-size: 24px;
+  line-height: 34px;
+}
+.panel .panel-body {
+  font-size: 13px;
+}
+.panel .panel-body > .body-section {
+  margin: 0px 0px 20px;
+}
+.panel .panel-body > .body-section > .section-heading {
+  margin: 0px 0px 5px;
+  font-weight: bold;
+}
+.panel .panel-body > .body-section > .section-content {
+  margin: 0px 0px 10px;
+}
+.panel-white {
+  border: 1px solid #dddddd;
+}
+.panel-white > .panel-heading {
+  color: #333;
+  background-color: #fff;
+  border-color: #ddd;
+}
+.panel-white > .panel-footer {
+  background-color: #fff;
+  border-color: #ddd;
+}
+.panel-primary {
+  border: 1px solid #dddddd;
+}
+.panel-purple {
+  border: 1px solid #dddddd;
+}
+.panel-purple > .panel-heading {
+  color: #fff;
+  background-color: #8e44ad;
+  border: none;
+}
+.panel-purple > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-purple {
+  border: 1px solid #dddddd;
+}
+.panel-light-purple > .panel-heading {
+  color: #fff;
+  background-color: #9b59b6;
+  border: none;
+}
+.panel-light-purple > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-blue,
+.panel-info {
+  border: 1px solid #dddddd;
+}
+.panel-blue > .panel-heading,
+.panel-info > .panel-heading {
+  color: #fff;
+  background-color: #2980b9;
+  border: none;
+}
+.panel-blue > .panel-heading .panel-title a:hover,
+.panel-info > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-blue {
+  border: 1px solid #dddddd;
+}
+.panel-light-blue > .panel-heading {
+  color: #fff;
+  background-color: #3498db;
+  border: none;
+}
+.panel-light-blue > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-green,
+.panel-success {
+  border: 1px solid #dddddd;
+}
+.panel-green > .panel-heading,
+.panel-success > .panel-heading {
+  color: #fff;
+  background-color: #27ae60;
+  border: none;
+}
+.panel-green > .panel-heading .panel-title a:hover,
+.panel-success > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-green {
+  border: 1px solid #dddddd;
+}
+.panel-light-green > .panel-heading {
+  color: #fff;
+  background-color: #2ecc71;
+  border: none;
+}
+.panel-light-green > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-orange,
+.panel-warning {
+  border: 1px solid #dddddd;
+}
+.panel-orange > .panel-heading,
+.panel-warning > .panel-heading {
+  color: #fff;
+  background-color: #e82c0c;
+  border: none;
+}
+.panel-orange > .panel-heading .panel-title a:hover,
+.panel-warning > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-orange {
+  border: 1px solid #dddddd;
+}
+.panel-light-orange > .panel-heading {
+  color: #fff;
+  background-color: #ff530d;
+  border: none;
+}
+.panel-light-orange > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-red,
+.panel-danger {
+  border: 1px solid #dddddd;
+}
+.panel-red > .panel-heading,
+.panel-danger > .panel-heading {
+  color: #fff;
+  background-color: #d40d12;
+  border: none;
+}
+.panel-red > .panel-heading .panel-title a:hover,
+.panel-danger > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-red {
+  border: 1px solid #dddddd;
+}
+.panel-light-red > .panel-heading {
+  color: #fff;
+  background-color: #ff1d23;
+  border: none;
+}
+.panel-light-red > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-pink {
+  border: 1px solid #dddddd;
+}
+.panel-pink > .panel-heading {
+  color: #fff;
+  background-color: #fe31ab;
+  border: none;
+}
+.panel-pink > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-light-pink {
+  border: 1px solid #dddddd;
+}
+.panel-light-pink > .panel-heading {
+  color: #fff;
+  background-color: #fd32c0;
+  border: none;
+}
+.panel-light-pink > .panel-heading .panel-title a:hover {
+  color: #f0f0f0;
+}
+.panel-group .panel {
+  border-radius: 0;
+}
+.panel-group .panel + .panel {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.bg-blue,
+.bg-info {
+  background-color: #2980b9 !important;
+}
+.bg-light-blue {
+  background-color: #3498db !important;
+}
+.bg-red,
+.bg-danger {
+  background-color: #d40d12 !important;
+}
+.bg-light-red {
+  background-color: #ff1d23 !important;
+}
+.bg-purple {
+  background-color: #8e44ad !important;
+}
+.bg-light-purple {
+  background-color: #9b59b6 !important;
+}
+.bg-green,
+bg-success {
+  background-color: #27ae60 !important;
+}
+.bg-light-green {
+  background-color: #2ecc71 !important;
+}
+.bg-orange,
+.bg-warning {
+  background-color: #e82c0c !important;
+}
+.bg-light-orange {
+  background-color: #ff530d !important;
+}
+.bg-pink {
+  background-color: #fe31ab !important;
+}
+.bg-light-pink {
+  background-color: #fd32c0 !important;
+}
+.color-white {
+  color: white !important;
+}
+.color-green,
+.text-success {
+  color: #27ae60 !important;
+}
+.color-light-green {
+  color: #2ecc71 !important;
+}
+.color-blue,
+.text-info {
+  color: #2980b9 !important;
+}
+.color-light-blue {
+  color: #3498db !important;
+}
+.color-orange,
+.text-warning {
+  color: #e82c0c !important;
+}
+.color-light-orange {
+  color: #ff530d !important;
+}
+.color-red,
+.text-danger {
+  color: #d40d12 !important;
+}
+.color-light-red {
+  color: #ff1d23 !important;
+}
+.color-purple {
+  color: #8e44ad !important;
+}
+.color-light-purple {
+  color: #9b59b6 !important;
+}
+.color-pink {
+  color: #fe31ab !important;
+}
+.color-light-pink {
+  color: #fd32c0 !important;
+}
+.border-green {
+  border: 4px solid #27ae60 !important;
+}
+.border-light-green {
+  border: 4px solid #2ecc71 !important;
+}
+.border-blue {
+  border: 4px solid #2980b9 !important;
+}
+.border-light-blue {
+  border: 4px solid #3498db !important;
+}
+.border-orange {
+  border: 4px solid #e82c0c !important;
+}
+.border-light-orange {
+  border: 4px solid #ff530d !important;
+}
+.border-red {
+  border: 4px solid #d40d12 !important;
+}
+.border-light-red {
+  border: 4px solid #ff1d23 !important;
+}
+.border-purple {
+  border: 4px solid #8e44ad !important;
+}
+.border-light-purple {
+  border: 4px solid #9b59b6 !important;
+}
+.border-pink {
+  border: 4px solid #fe31ab !important;
+}
+.border-light-pink {
+  border: 4px solid #fd32c0 !important;
+}
+.border-top-green {
+  border-top: 4px solid #27ae60 !important;
+}
+.border-top-light-green {
+  border-top: 4px solid #2ecc71 !important;
+}
+.border-top-blue {
+  border-top: 4px solid #2980b9 !important;
+}
+.border-top-light-blue {
+  border-top: 4px solid #3498db !important;
+}
+.border-top-orange {
+  border-top: 4px solid #e82c0c !important;
+}
+.border-top-light-orange {
+  border-top: 4px solid #ff530d !important;
+}
+.border-top-red {
+  border-top: 4px solid #d40d12 !important;
+}
+.border-top-light-red {
+  border-top: 4px solid #ff1d23 !important;
+}
+.border-top-purple {
+  border-top: 4px solid #8e44ad !important;
+}
+.border-top-light-purple {
+  border-top: 4px solid #9b59b6 !important;
+}
+.border-top-pink {
+  border-top: 4px solid #fe31ab !important;
+}
+.border-top-light-pink {
+  border-top: 4px solid #fd32c0 !important;
+}
+.border-right-green {
+  border-right: 4px solid #27ae60 !important;
+}
+.border-right-light-green {
+  border-right: 4px solid #2ecc71 !important;
+}
+.border-right-blue {
+  border-right: 4px solid #2980b9 !important;
+}
+.border-right-light-blue {
+  border-right: 4px solid #3498db !important;
+}
+.border-right-orange {
+  border-right: 4px solid #e82c0c !important;
+}
+.border-right-light-orange {
+  border-right: 4px solid #ff530d !important;
+}
+.border-right-red {
+  border-right: 4px solid #d40d12 !important;
+}
+.border-right-light-red {
+  border-right: 4px solid #ff1d23 !important;
+}
+.border-right-purple {
+  border-right: 4px solid #8e44ad !important;
+}
+.border-right-light-purple {
+  border-right: 4px solid #9b59b6 !important;
+}
+.border-right-pink {
+  border-right: 4px solid #fe31ab !important;
+}
+.border-right-light-pink {
+  border-right: 4px solid #fd32c0 !important;
+}
+.border-bottom-green {
+  border-bottom: 4px solid #27ae60 !important;
+}
+.border-bottom-light-green {
+  border-bottom: 4px solid #2ecc71 !important;
+}
+.border-bottom-blue {
+  border-bottom: 4px solid #2980b9 !important;
+}
+.border-bottom-light-blue {
+  border-bottom: 4px solid #3498db !important;
+}
+.border-bottom-orange {
+  border-bottom: 4px solid #e82c0c !important;
+}
+.border-bottom-light-orange {
+  border-bottom: 4px solid #ff530d !important;
+}
+.border-bottom-red {
+  border-bottom: 4px solid #d40d12 !important;
+}
+.border-bottom-light-red {
+  border-bottom: 4px solid #ff1d23 !important;
+}
+.border-bottom-purple {
+  border-bottom: 4px solid #8e44ad !important;
+}
+.border-bottom-light-purple {
+  border-bottom: 4px solid #9b59b6 !important;
+}
+.border-bottom-pink {
+  border-bottom: 4px solid #fe31ab !important;
+}
+.border-bottom-light-pink {
+  border-bottom: 4px solid #fd32c0 !important;
+}
+.border-left-green {
+  border-left: 4px solid #27ae60 !important;
+}
+.border-left-light-green {
+  border-left: 4px solid #2ecc71 !important;
+}
+.border-left-blue {
+  border-left: 4px solid #2980b9 !important;
+}
+.border-left-light-blue {
+  border-left: 4px solid #3498db !important;
+}
+.border-left-orange {
+  border-left: 4px solid #e82c0c !important;
+}
+.border-left-light-orange {
+  border-left: 4px solid #ff530d !important;
+}
+.border-left-red {
+  border-left: 4px solid #d40d12 !important;
+}
+.border-left-light-red {
+  border-left: 4px solid #ff1d23 !important;
+}
+.border-left-purple {
+  border-left: 4px solid #8e44ad !important;
+}
+.border-left-light-purple {
+  border-left: 4px solid #9b59b6 !important;
+}
+.border-left-pink {
+  border-left: 4px solid #fe31ab !important;
+}
+.border-left-light-pink {
+  border-left: 4px solid #fd32c0 !important;
+}
+/* .bg2 {
+  background-image: url('http://www.bootdey.com/img/Content/flores-amarillas-wallpaper.jpeg');
+} */
+
+
+
+
+.btn-blue {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+.btn-blue:hover,
+.btn-blue:visited {
+  background-color: #2980b9;
+  color: white;
+}
+.btn-green {
+  background-color: #2ecc71;
+  border-color: #27ae60;
+  color: white;
+}
+.btn-green:hover,
+.btn-green:visited {
+  background-color: #27ae60;
+  color: white;
+}
+.btn-orange {
+  background-color: #ff530d;
+  border-color: #e82c0c;
+  color: white;
+}
+.btn-orange:hover,
+.btn-orange:visited {
+  background-color: #e82c0c;
+  color: white;
+}
+.btn-red {
+  background-color: #ff1d23;
+  border-color: #d40d12;
+  color: white;
+}
+.btn-red:hover,
+.btn-red:visited {
+  background-color: #d40d12;
+  color: white;
+}
+.btn-purple {
+  background-color: #9b59b6;
+  border-color: #8e44ad;
+  color: white;
+}
+.btn-purple:hover,
+.btn-purple:visited {
+  background-color: #8e44ad;
+  color: white;
+}
+.btn-pink {
+  background-color: #fd32c0;
+  border-color: #fe31ab;
+  color: white;
+}
+.btn-pink:hover,
+.btn-pink:visited {
+  background-color: #fe31ab;
+  color: white;
+}
+
+.progress.progress-xs {
+    height: 12px;
+}
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>
