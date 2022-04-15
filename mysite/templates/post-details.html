@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'home' %}">Home
+    <span class="sr-only">(current)</span>
+  </a>
+</li> 
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'about' %}">About Us</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'blog' %}">Blog Entries</a>
+</li> 
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+</li>
+{% if request.user.is_authenticated %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'user_logout' %}">Logout</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" style="font-weight:400" href="{% url 'user_profiles' user.username %}">{{ request.user }}</a>
+  </li>
+{% else %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'user_register' %}">Register</a>
+  <a class="nav-link" href="{% url 'user_login' %}">Login</a>
+</li>
+{% endif %}
+{% endblock header %}
+
+
+{% block content %}
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+      <section class="page-heading">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-content">
+                <h4>Post Details</h4>
+                <h2>Single blog post</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <!-- Banner Ends Here -->
+
+    <section class="call-to-action">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="main-content">
+              <div class="row">
+                <div class="col-lg-8">
+                  <span>Stand Blog HTML5 Template</span>
+                  <h4>Creative HTML Template For Bloggers!</h4>
+                </div>
+                <div class="col-lg-4">
+                  <div class="main-button">
+                    <a rel="nofollow" href="https://templatemo.com/tm-551-stand-blog" target="_parent">Download Now!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="blog-posts grid-system">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="all-blog-posts">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="blog-post ">
+                    {% if image %}
+                    <div class="owl-banner owl-carousel" >
+                      <div class="item">
+                        <img src="{{ post.image.url }}">
+                      </div>
+                      {% for i in image %}
+                      <div class="item">
+                        <img src="{{ i.image.url }}">
+                      </div>
+                      {% endfor %}
+                    </div><br>
+                    {% for el in image %}
+                    {% if forloop.counter < 2 %}
+                    <div class="blog-thumb">
+                      <img src="{{ el.image.url }}" alt="">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <div class="blog-thumb">
+                      <img src="{{ post.image.url }}" alt="">
+                    </div>
+                    {% endif %}
+                    <div class="down-content">
+                      <span>{{ post.category }}</span>
+                      <h4>{{ post.title }}</h4>
+                      <ul class="post-info">
+                        <li><a href="#">{{ post.author }}</a></li>
+                        <li><a href="{% url 'date_post' post.date %}">{{ post.date }}</a></li>
+                        <li><a href="#">{{ post.get_comment_count }} Comment</a></li>
+                        <li><a href="#">{{ post_likes }} Like</a></li>
+                      </ul>
+                      <p>{{ post.text }}
+                        <form action="{% url 'like_post' post.slug %}" method="POST">
+                          {% csrf_token %}
+                          <button type="submit" name="like" value="{{post.slug}}" style="border-radius: 5px; width: 50px;">like</button> {{ post_likes }}
+                        </form>
+                      </p>
+                      <div class="post-options">
+                        <div class="row">
+                          <div class="col-6">
+                            <ul class="post-tags">
+                              <li><i class="fa fa-tags"></i></li>
+                              {% for tag_slug in post.tag.all %}
+                              <li><a href="{% url 'filter_tag' tag_slug.slug %}">#{{ tag_slug.tag }}</a></li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                          <div class="col-6">
+                            <ul class="post-share">
+                              <li><i class="fa fa-share-alt"></i></li>
+                              <li><a href="#">Facebook</a>,</li>
+                              <li><a href="#"> Twitter</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-heading">
+                    <h2>{{ post.get_comment_count }} Comment</h2>
+                  </div>
+                  {% for comment in comments.all %}
+                  <div class="sidebar-item comments">
+                    <div class="content">
+                      <ul>
+                        <li>
+                          <div class="author-thumb">
+                            <img src="{% static 'assets/images/comment-author-01.jpg' %}" alt="">
+                          </div>
+                          <div class="right-content">
+                            <h4>{{ comment.author }}<span>{{ comment.date }}</span></h4>
+                            <p>{{ comment.text }}</p>
+                          </div>
+                        </li>
+                        {% for reply in comment.replies.all %}
+                        <li class="replied">
+                          <div class="author-thumb">
+                            <img src="{% static 'assets/images/comment-author-01.jpg' %}" alt="">
+                          </div>
+                          <div class="right-content">
+                            <h4>{{ reply.author }}<span>{{ reply.date }}</span></h4>
+                            <p>{{ reply.text }}</p>
+                          </div>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                      <div class="col-lg-5">
+                        <div class="sidebar-item submit-comment">
+                          <div class="sidebar-heading">
+                            <h2>Answer</h2>
+                          </div>
+                          <div class="content">
+                            <form id="comment" action="" method="POST">{% csrf_token %}
+                              <div class="row">
+                                <div>
+                                  <fieldset>
+                                    {{ comment_form.text }}                     
+                                  </fieldset>
+                                </div>
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <div class="col-lg-5">
+                                  <fieldset>
+                                    <button type="submit" id="form-submit" class="main-button">Submit</button>
+                                  </fieldset>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-lg-8">
+                  <div class="sidebar-item submit-comment">
+                    <div class="sidebar-heading">
+                      <h2>Your Comment</h2>
+                    </div>
+                    <form id="comment" action="" method="POST">{% csrf_token %}
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <fieldset>
+                            {{ comment_form.text }}                     
+                          </fieldset>
+                        </div>
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="col-lg-12">
+                          <fieldset>
+                            <button type="submit" id="form-submit" class="main-button">Submit</button>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="sidebar-item recent-posts">
+                    <div class="sidebar-heading">
+                      <h2>Recent Posts</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for post_recent in post_right %}
+                        {% if post.title != post_recent.title %}
+                        <li><a href="{% url 'post-details' post_recent.slug %}">
+                          <h5>{{ post_recent.title }}</h5>
+                          <span>{{ post_recent.date }}</span>
+                        </a></li>
+                        {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item categories">
+                    <div class="sidebar-heading">
+                      <h2>Categories</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for category_post in category %}
+                        <li><a href="{% url  'filter' category_post.slug %}">- {{ category_post.name }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item tags">
+                    <div class="sidebar-heading">
+                      <h2>Tag Clouds</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for tag_right in tag %}
+                        <li><a href="{% url 'filter_tag' tag_right.slug %}">{{ tag_right.tag }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

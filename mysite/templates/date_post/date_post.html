@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'home' %}">Home
+    <span class="sr-only">(current)</span>
+  </a>
+</li> 
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'about' %}">About Us</a>
+</li>
+<li class="nav-item active">
+  <a class="nav-link" href="{% url 'blog' %}">Blog Entries</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+</li>
+{% endblock header %}
+
+{% block content %}
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+      <section class="page-heading">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-content">
+                <h4>Recent Posts</h4>
+                <h2>Our Recent Blog Entries</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <!-- Banner Ends Here -->
+
+    <section class="call-to-action">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="main-content">
+              <div class="row">
+                <div class="col-lg-8">
+                  <span>Stand Blog HTML5 Template</span>
+                  <h4>Creative HTML Template For Bloggers!</h4>
+                </div>
+                <div class="col-lg-4">
+                  <div class="main-button">
+                    <a href="https://templatemo.com/tm-551-stand-blog" target="_parent">Download Now!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="blog-posts grid-system">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="all-blog-posts">
+              <div class="row">
+                <div class="col-lg-12">
+                  {% for new in new_post %}
+                  <div class="blog-post">
+                    <div class="blog-thumb">
+                      <img src="{{ new.image.url }}" alt="">
+                    </div>
+                    <div class="down-content">
+                      <span>{{ new.category }}</span>
+                      <a href="{% url 'post-details' new.slug %}"><h4>{{ new.title }}</h4></a>
+                      <ul class="post-info">
+                        <li><a href="#">{{ new.author }}</a></li>
+                        <li><a href="{% url 'date_post' new.date %}">{{ new.date }}</a></li>
+                        <li><a href="#">{{ new.get_comment_count }} Comment</a></li>
+                        <li><a href="#">{{ new.total_likes}} Like</a></li>
+                      </ul>
+                      <p>{{ new.text|truncatechars:100 }}.</p>
+                      <div class="post-options">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <ul class="post-tags">
+                              <li><i class="fa fa-tags"></i></li>
+                              {% for tag_s in new.tag.all %}
+                              <li><a href="{% url 'filter_tag' tag_s.slug %}">#{{ tag_s.tag }}</a></li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="col-lg-12">
+                  <ul class="page-numbers">
+                    {% if new_post.has_previous %}
+                    <li class="tm-paging-item ">
+                        <a href="?page=1" class="mb-2 tm-btn tm-paging-link">First</a>
+                    </li>
+                    {% endif %}
+                    {%for n in new_post.paginator.page_range%}
+                    {% if new_post.number == n %}
+                    <li class="tm-paging-item">
+                        <a href="?page={{ n }}" class="mb-2 tm-btn tm-paging-link">{{ n }}</a>
+                    </li>
+                    {% elif n > new_post.number|add:-3 and n < new_post.number|add:3%}
+                    <li class="tm-paging-item">
+                        <a href="?page={{ n }}" class="mb-2 tm-btn tm-paging-link">{{ n }}</a>
+                    </li>
+                    {% endif %}
+                    {%endfor%}
+                    {% if new_post.has_next %}
+                    <li class="tm-paging-item">
+                        <a href="?page={{new_post.paginator.num_pages}}" class="mb-2 tm-btn tm-paging-link">Last</a>
+                    </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="sidebar-item search">
+                    <form id="search_form" name="gs" method="GET" action="#">
+                      <input type="text" name="q" class="searchText" placeholder="type to search..." autocomplete="on">
+                    </form>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item categories">
+                    <div class="sidebar-heading">
+                      <h2>Categories</h2>
+                    </div>
+                    {% for category_new in category %}
+                    <div class="content">
+                      <ul>
+                        <li><a href="{% url 'filter' category_new.slug %}">- {{ category_new.name }}</a></li>
+                      </ul>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item tags">
+                    <div class="sidebar-heading">
+                      <h2>Tag Clouds</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for tag_new in tag %}
+                        <li><a href="{% url 'filter_tag' tag_new.slug %}" class="">{{ tag_new.tag }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
