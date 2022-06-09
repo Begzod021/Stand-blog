@@ -163,9 +163,12 @@ def filter_tag(request, slug):
     return render(request, 'filters/tags.html', context)
 
 def LikeView(request, slug):
-    post = Post.objects.get(slug=slug)
-    post.likes.add(request.user)
-    post.save()
+    if request.user.is_authenticated:
+        post = Post.objects.get(slug=slug)
+        post.likes.add(request.user)
+        post.save()
+    else:
+        return redirect('user_login')
 
     return HttpResponseRedirect(reverse('post-details', args=[str(slug)])) 
 

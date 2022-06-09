@@ -25,6 +25,8 @@
 {% else %}
 <li class="nav-item">
   <a class="nav-link" href="{% url 'user_register' %}">Register</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="{% url 'user_login' %}">Login</a>
 </li>
 {% endif %}
@@ -117,7 +119,7 @@
                       <p>{{ post.text }}
                         <form action="{% url 'like_post' post.slug %}" method="POST">
                           {% csrf_token %}
-                          <button type="submit" name="like" value="{{post.slug}}" style="border-radius: 5px; width: 50px;">like</button> {{ post_likes }}
+                          <button type="submit" name="like" value="{{post.slug}}" class="btn btn-success px-3"><i class="bi bi-hand-thumbs-up"></i></button> {{ post_likes }}
                         </form>
                       </p>
                       <div class="post-options">
